@@ -31,7 +31,7 @@ def create_stealth_driver():
     driver.execute_script("Object.defineProperty(navigator, 'languages', {get: () => ['ru-RU', 'ru']})")
     return driver
 
-def parse_federal_reestr_with_inn_ogrn(max_records=5):
+def parse_federal_reestr_with_inn_ogrn(max_records=10):
     """Парсит данные из реестра и возвращает список записей."""
     print("🔍 Шаг 1: Запуск парсинга данных из реестра...")
     driver = create_stealth_driver()
