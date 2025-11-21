@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Эффективность — ИТ Калининград</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .back-btn{position:fixed;top:100px;left:30px;z-index:1000;background:rgba(102,252,241,0.15);border:1px solid var(--accent);color:var(--accent);padding:12px 20px;border-radius:16px;font-weight:700;backdrop-filter:blur(10px);transition:all .3s}
+    .back-btn:hover{background:var(--accent);color:#071026;transform:translateY(-3px)}
+    .chart-container{max-width:1100px;margin:0 auto;padding:120px 20px 80px}
+    .chart-card{background:var(--glass);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:40px;backdrop-filter:blur(16px)}
+    h1{font-size:42px;text-align:center;background:linear-gradient(90deg,#66fcf1,#45a29e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px}
+    p.subtitle{text-align:center;font-size:20px;opacity:0.9;margin-bottom:50px}
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <nav>
+    <div class="logo">ИТ Калининград</div>
+    <a href="../dashboard.html" class="btn btn-ghost">Назад к дашборду</a>
+  </nav>
+  <a href="../dashboard.html" class="back-btn">← Назад</a>
+
+  <div class="chart-container">
+    <h1>Эффективность компаний</h1>
+    <p class="subtitle">Выручка на одного сотрудника (ТОП-15)</p>
+    <div class="chart-card">
+      <canvas id="myChart" height="600"></canvas>
+    </div>
+  </div>
+
+  <script src="../particles.js"></script>
+  <script src="../data.js"></script>
+  <script>
+    function parseRevenue(s) {
+      const n = parseFloat(s.replace(/[^\d.]/g,''));
+      return s.includes('млрд') ? n * 1000 : n;
+    }
+
+    const eff = [...companies]
+      .sort((a,b) => (parseRevenue(b.revenue)/b.employees) - (parseRevenue(a.revenue)/a.employees))
+      .slice(0,15)
+      .map(c => ({
+        name: c.name.length > 22 ? c.name.slice(0,19)+'...' : c.name,
+        val: parseRevenue(c.revenue) / c.employees
+      }));
+
+    new Chart(document.getElementById('myChart'), {
+      type: 'bar',
+      data: {
+        labels: eff.map(e => e.name),
+        datasets: [{
+          label: 'млн ₽ на сотрудника',
+          data: eff.map(e => e.val.toFixed(1)),
+          backgroundColor: '#45a29e'
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' } } }
+      }
+    });
+  </script>
+</body>
+</html>
